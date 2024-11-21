@@ -1,6 +1,14 @@
 // THIS IS A AUTO-GENERATED FILE. DO NOT MODIFY MANUALLY!
 
-export type Repos = GitHubConfig | GitLabConfig | GiteaConfig | LocalConfig;
+export type Repos = GitHubConfig | GitLabConfig | GiteaConfig | LocalConfig | GerritConfig;
+/**
+ * List of branches to include when indexing. For a given repo, only the branches that exist on the repo's remote *and* match at least one of the provided `branches` will be indexed. The default branch (HEAD) is always indexed. Glob patterns are supported.
+ */
+export type Branches = string[];
+/**
+ * List of tags to include when indexing. For a given repo, only the tags that exist on the repo's remote *and* match at least one of the provided `tags` will be indexed. Glob patterns are supported.
+ */
+export type Tags = string[];
 
 /**
  * A Sourcebot configuration file outlines which repositories Sourcebot should sync and index.
@@ -64,14 +72,8 @@ export interface GitHubConfig {
  * The revisions (branches, tags) that should be included when indexing. The default branch (HEAD) is always indexed.
  */
 export interface GitRevisions {
-  /**
-   * List of branches to include when indexing. For a given repo, only the branches that exist on the repo's remote *and* match at least one of the provided `branches` will be indexed. The default branch (HEAD) is always indexed. Glob patterns are supported.
-   */
-  branches?: string[];
-  /**
-   * List of tags to include when indexing. For a given repo, only the tags that exist on the repo's remote *and* match at least one of the provided `tags` will be indexed. Glob patterns are supported.
-   */
-  tags?: string[];
+  branches?: Branches;
+  tags?: Tags;
 }
 export interface GitLabConfig {
   /**
@@ -188,8 +190,33 @@ export interface LocalConfig {
   watch?: boolean;
   exclude?: {
     /**
-     * List of paths relative to the provided `path` to exclude from the index. .git, .hg, and .svn are always exluded.
+     * List of paths relative to the provided `path` to exclude from the index. .git, .hg, and .svn are always excluded.
      */
     paths?: string[];
   };
+}
+export interface GerritConfig {
+  /**
+   * Gerrit Configuration
+   */
+  type: "gerrit";
+  /**
+   * The URL of the Gerrit host.
+   */
+  url: string;
+  /**
+   * The maximum number of projects to fetch.
+   */
+  limit?: number;
+  /**
+   * List of specific projects to sync. If not specified, all projects will be synced.
+   */
+  projects?: string[];
+  exclude?: {
+    /**
+     * List of specific projects to exclude from syncing.
+     */
+    projects?: string[];
+  };
+  revisions?: GitRevisions;
 }
